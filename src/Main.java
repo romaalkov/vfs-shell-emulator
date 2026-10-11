@@ -1,5 +1,14 @@
+import javax.swing.SwingUtilities;
+
+/**
+ * Точка входа в эмулятор.
+ */
 public class Main {
+
     public static void main(String[] args) {
-        System.out.println("VFS Emulator initialized");
+        SwingUtilities.invokeLater(() -> {
+            ShellWindow window = new ShellWindow();
+            window.setVisible(true);
+        });
     }
 }

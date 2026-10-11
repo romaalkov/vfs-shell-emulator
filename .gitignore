@@ -1,22 +1,30 @@
-# Java
+# Скомпилированные файлы Java
 *.class
 *.jar
 
-# Compiled files
+# Папки с результатами компиляции
 out/
 build/
 target/
 
-# VS Code
+# Настройки VS Code
 .vscode/
 
-# IntelliJ IDEA
+# Настройки IntelliJ IDEA
 .idea/
 *.iml
 
-# Logs
+# Логи программы
 *.log
+logs/
 
-# System files
-.DS_Store
+# Временные файлы
+*.tmp
+*.bak
+
+# Системные файлы Windows
 Thumbs.db
+Desktop.ini
+
+# Системные файлы macOS
+.DS_Store
