@@ -1,23 +1,17 @@
 
 import java.util.Arrays;
 
-/**
- * Обрабатывает команды пользователя.
- */
+/** Разбор и выполнение команд эмулятора. */
 public class CommandProcessor {
 
-    public record Result(String message, boolean shouldExit) {
+    /** Результат команды: сообщение, завершение и признак ошибки. */
+    public record Result(String message, boolean shouldExit, boolean hasError) {
     }
 
-    /**
-     * Разбирает введённую строку и выполняет команду.
-     *
-     * @param line строка пользователя
-     * @return результат выполнения
-     */
+    /** Выполняет введённую команду. */
     public Result execute(String line) {
         if (line == null || line.isBlank()) {
-            return new Result("", false);
+            return new Result("", false, false);
         }
 
         String[] parts = line.trim().split("\\s+");
@@ -28,33 +22,35 @@ public class CommandProcessor {
             case "ls" -> handleLs(args);
             case "cd" -> handleCd(args);
             case "exit" -> handleExit(args);
-            default -> new Result(
-                "Ошибка: неизвестная команда '" + command + "'", false
-            );
+            default -> error("неизвестная команда '" + command + "'");
         };
     }
 
     private Result handleLs(String[] args) {
         if (args.length > 1) {
-            return new Result("Ошибка: ls принимает не более одного аргумента", false);
+            return error("ls принимает не более одного аргумента");
         }
 
-        return new Result("ls: " + Arrays.toString(args), false);
+        return new Result("ls: " + Arrays.toString(args), false, false);
     }
 
     private Result handleCd(String[] args) {
         if (args.length != 1) {
-            return new Result("Ошибка: cd требует один аргумент", false);
+            return error("cd требует один аргумент");
         }
 
-        return new Result("cd: " + Arrays.toString(args), false);
+        return new Result("cd: " + Arrays.toString(args), false, false);
     }
 
     private Result handleExit(String[] args) {
         if (args.length != 0) {
-            return new Result("Ошибка: exit не принимает аргументы", false);
+            return error("exit не принимает аргументы");
         }
 
-        return new Result("Выход из эмулятора", true);
+        return new Result("Выход из эмулятора", true, false);
+    }
+
+    private Result error(String message) {
+        return new Result("Ошибка: " + message, false, true);
     }
 }
