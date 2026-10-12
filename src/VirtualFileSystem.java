@@ -281,4 +281,33 @@ public class VirtualFileSystem {
     private record Location(String path, VfsNode node) {
     }
 
+    /**
+     * Изменяет владельца файла или каталога только в памяти.
+     *
+     * @param currentDirectory текущий виртуальный каталог
+     * @param path путь к файлу или каталогу
+     * @param owner новый владелец
+     * @return абсолютный путь изменённого объекта
+     */
+    public String changeOwner(
+            String currentDirectory, String path, String owner) {
+
+        if (owner == null || owner.isBlank()) {
+            throw new IllegalArgumentException("не указан владелец");
+        }
+
+        Location target = resolve(currentDirectory, path);
+        target.node.owner = owner;
+
+        return target.path;
+    }
+
+    /**
+     * Возвращает владельца файла или каталога.
+     * Используется для проверки изменений.
+     */
+    public String ownerOf(String currentDirectory, String path) {
+        return resolve(currentDirectory, path).node.owner;
+    }
+
 }

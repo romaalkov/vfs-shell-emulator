@@ -1,0 +1,11 @@
+ls /
+cd /home/user/projects
+ls
+chown alice readme.txt
+du readme.txt
+cd /
+chown bob /etc
+date
+vfs-init
+ls
+exit

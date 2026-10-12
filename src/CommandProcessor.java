@@ -31,15 +31,18 @@ public class CommandProcessor {
         String[] parts = line.trim().split("\\s+");
         String[] args = Arrays.copyOfRange(parts, 1, parts.length);
 
+        
         return switch (parts[0]) {
             case "ls" -> handleLs(args);
             case "cd" -> handleCd(args);
             case "du" -> handleDu(args);
             case "date" -> handleDate(args);
+            case "chown" -> handleChown(args);
             case "vfs-init" -> handleVfsInit(args);
             case "exit" -> handleExit(args);
             default -> error("неизвестная команда '" + parts[0] + "'");
         };
+
     }
 
     private Result handleLs(String[] args) {
@@ -123,4 +126,25 @@ public class CommandProcessor {
     private Result error(String message) {
         return new Result("Ошибка: " + message, false, true);
     }
+    
+    /**
+     * Изменяет владельца виртуального файла или каталога.
+     */
+    private Result handleChown(String[] args) {
+        if (args.length != 2) {
+            return error("chown требует два аргумента: владелец и путь");
+        }
+
+        try {
+            String path = vfs.changeOwner(
+                    currentDirectory, args[1], args[0]);
+
+            return success("Владелец " + path
+                    + " изменён на " + args[0]);
+
+        } catch (IllegalArgumentException e) {
+            return error("chown: " + e.getMessage());
+        }
+    }
+
 }

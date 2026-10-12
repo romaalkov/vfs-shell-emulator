@@ -1,4 +1,4 @@
 ls
-cd home
+cd /
 vfs-init
-ls documents
+ls
