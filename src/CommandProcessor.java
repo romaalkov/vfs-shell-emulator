@@ -1,14 +1,24 @@
 
+import java.io.IOException;
 import java.util.Arrays;
 
-/** Разбор и выполнение команд эмулятора. */
+/** Обрабатывает команды пользователя. */
 public class CommandProcessor {
+    private final VirtualFileSystem vfs;
 
-    /** Результат команды: сообщение, завершение и признак ошибки. */
+    /** Результат выполнения команды. */
     public record Result(String message, boolean shouldExit, boolean hasError) {
     }
 
-    /** Выполняет введённую команду. */
+    public CommandProcessor() {
+        this(VirtualFileSystem.empty());
+    }
+
+    public CommandProcessor(VirtualFileSystem vfs) {
+        this.vfs = vfs;
+    }
+
+    /** Разбирает команду и её аргументы. */
     public Result execute(String line) {
         if (line == null || line.isBlank()) {
             return new Result("", false, false);
@@ -22,6 +32,7 @@ public class CommandProcessor {
             case "ls" -> handleLs(args);
             case "cd" -> handleCd(args);
             case "exit" -> handleExit(args);
+            case "vfs-init" -> handleVfsInit(args);
             default -> error("неизвестная команда '" + command + "'");
         };
     }
@@ -48,6 +59,21 @@ public class CommandProcessor {
         }
 
         return new Result("Выход из эмулятора", true, false);
+    }
+
+    /** Сбрасывает виртуальную файловую систему. */
+    private Result handleVfsInit(String[] args) {
+        if (args.length != 0) {
+            return error("vfs-init не принимает аргументы");
+        }
+
+        try {
+            vfs.reset();
+            return new Result("VFS сброшена. " + vfs.describe(),
+                    false, false);
+        } catch (IOException e) {
+            return error("не удалось сбросить VFS: " + e.getMessage());
+        }
     }
 
     private Result error(String message) {

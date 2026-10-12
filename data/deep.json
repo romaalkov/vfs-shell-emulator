@@ -1,0 +1,48 @@
+
+{
+  "name": "/",
+  "type": "directory",
+  "owner": "root",
+  "children": [
+    {
+      "name": "home",
+      "type": "directory",
+      "owner": "root",
+      "children": [
+        {
+          "name": "user",
+          "type": "directory",
+          "owner": "user",
+          "children": [
+            {
+              "name": "projects",
+              "type": "directory",
+              "owner": "user",
+              "children": [
+                {
+                  "name": "readme.txt",
+                  "type": "file",
+                  "owner": "user",
+                  "contentBase64": "SGVsbG8="
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "etc",
+      "type": "directory",
+      "owner": "root",
+      "children": [
+        {
+          "name": "config.txt",
+          "type": "file",
+          "owner": "root",
+          "contentBase64": "Q29uZmln"
+        }
+      ]
+    }
+  ]
+}

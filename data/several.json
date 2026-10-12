@@ -1,0 +1,33 @@
+
+{
+  "name": "/",
+  "type": "directory",
+  "owner": "root",
+  "children": [
+    {
+      "name": "documents",
+      "type": "directory",
+      "owner": "user",
+      "children": [
+        {
+          "name": "hello.txt",
+          "type": "file",
+          "owner": "user",
+          "contentBase64": "SGVsbG8="
+        },
+        {
+          "name": "notes.txt",
+          "type": "file",
+          "owner": "user",
+          "contentBase64": "Tm90ZXM="
+        }
+      ]
+    },
+    {
+      "name": "message.txt",
+      "type": "file",
+      "owner": "root",
+      "contentBase64": "V2VsY29tZQ=="
+    }
+  ]
+}

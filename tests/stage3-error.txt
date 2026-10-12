@@ -1,0 +1,3 @@
+ls
+vfs-init wrong
+cd home

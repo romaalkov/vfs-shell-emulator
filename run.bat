@@ -1,9 +1,7 @@
 @echo off
 cd /d "%~dp0"
 
-if not exist out mkdir out
-
-javac -encoding UTF-8 -d out src\*.java
+call mvn -q -DskipTests compile dependency:copy-dependencies
 if errorlevel 1 exit /b 1
 
-java -cp out Main %*
+java -cp "target\classes;target\dependency\*" Main %*

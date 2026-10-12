@@ -9,13 +9,14 @@ import java.nio.file.Files;
 public class ShellWindow extends JFrame {
     private final JTextArea outputArea = new JTextArea();
     private final JTextField inputField = new JTextField();
-    private final CommandProcessor processor = new CommandProcessor();
+    private final CommandProcessor processor;
     private final AppConfig config;
     private final CsvLogger logger;
 
-    public ShellWindow(AppConfig config) {
-        this.config = config;
-        this.logger = new CsvLogger(config.logPath());
+    public ShellWindow(AppConfig config, VirtualFileSystem vfs) {
+    this.config = config;
+    this.logger = new CsvLogger(config.logPath());
+    this.processor = new CommandProcessor(vfs);
 
         setTitle("VFS - Shell Emulator");
         setSize(700, 450);
@@ -35,6 +36,7 @@ public class ShellWindow extends JFrame {
         inputField.addActionListener(e -> handleInput());
         outputArea.append("Welcome to VFS Shell Emulator\n");
         outputArea.append(config.describe() + "\n");
+        outputArea.append(vfs.describe() + "\n");
     }
 
     /** Выполняет команду, введённую в графическом окне. */
