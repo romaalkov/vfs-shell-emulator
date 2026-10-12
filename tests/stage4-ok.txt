@@ -1,0 +1,13 @@
+ls
+ls /etc
+cd home
+ls
+cd user
+cd projects
+ls
+du readme.txt
+du .
+du /
+cd ..
+cd /
+date

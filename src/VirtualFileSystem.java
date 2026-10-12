@@ -1,4 +1,8 @@
-
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.List;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
@@ -149,4 +153,132 @@ public class VirtualFileSystem {
 
         root = freshRoot;
     }
+    
+    /**
+     * Возвращает содержимое каталога или имя файла.
+     */
+    public String list(String currentDirectory, String path) {
+        Location target = resolve(currentDirectory, path);
+
+        if (target.node.type.equals("file")) {
+            return target.node.name;
+        }
+
+        List<String> names = new ArrayList<>();
+
+        for (VfsNode child : target.node.children) {
+            names.add(child.name);
+        }
+
+        Collections.sort(names);
+        return String.join("\n", names);
+    }
+
+    /**
+     * Проверяет каталог и возвращает его абсолютный путь.
+     */
+    public String changeDirectory(String currentDirectory, String path) {
+        Location target = resolve(currentDirectory, path);
+
+        if (!target.node.type.equals("directory")) {
+            throw new IllegalArgumentException(
+                    "не является каталогом: " + target.path);
+        }
+
+        return target.path;
+    }
+
+    /**
+     * Возвращает размер файла или каталога в байтах.
+     */
+    public String diskUsage(String currentDirectory, String path) {
+        Location target = resolve(currentDirectory, path);
+
+        return sizeInBytes(target.node) + "\t" + target.path;
+    }
+
+    /**
+     * Рекурсивно подсчитывает размер содержимого.
+     */
+    private long sizeInBytes(VfsNode node) {
+        if (node.type.equals("file")) {
+            return Base64.getDecoder().decode(node.contentBase64).length;
+        }
+
+        long total = 0;
+
+        for (VfsNode child : node.children) {
+            total += sizeInBytes(child);
+        }
+
+        return total;
+    }
+
+    /**
+     * Находит файл или каталог по виртуальному пути.
+     */
+    private Location resolve(String currentDirectory, String path) {
+        String absolutePath = normalize(currentDirectory, path);
+        VfsNode node = root;
+
+        if (absolutePath.equals("/")) {
+            return new Location("/", node);
+        }
+
+        for (String part : absolutePath.substring(1).split("/")) {
+            if (!node.type.equals("directory")) {
+                throw new IllegalArgumentException(
+                        "не является каталогом: " + part);
+            }
+
+            VfsNode found = null;
+
+            for (VfsNode child : node.children) {
+                if (child.name.equals(part)) {
+                    found = child;
+                    break;
+                }
+            }
+
+            if (found == null) {
+                throw new IllegalArgumentException(
+                        "путь не найден: " + absolutePath);
+            }
+
+            node = found;
+        }
+
+        return new Location(absolutePath, node);
+    }
+
+    /**
+     * Преобразует путь в абсолютный с учётом . и ..
+     */
+    private String normalize(String currentDirectory, String path) {
+        String full = path.startsWith("/")
+                ? path : currentDirectory + "/" + path;
+
+        Deque<String> parts = new ArrayDeque<>();
+
+        for (String part : full.split("/")) {
+            if (part.isEmpty() || part.equals(".")) {
+                continue;
+            }
+
+            if (part.equals("..")) {
+                if (!parts.isEmpty()) {
+                    parts.removeLast();
+                }
+            } else {
+                parts.addLast(part);
+            }
+        }
+
+        return "/" + String.join("/", parts);
+    }
+
+    /** Найденный объект и его абсолютный путь. */
+    private record Location(String path, VfsNode node) {
+    }
+
 }
