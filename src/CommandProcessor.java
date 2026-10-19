@@ -7,6 +7,7 @@ import java.util.Locale;
 
 /** Выполняет команды эмулятора с учётом текущего каталога VFS. */
 public class CommandProcessor {
+    private static final int CHOWN_ARGUMENT_COUNT = 2;
     private final VirtualFileSystem vfs;
     private String currentDirectory = "/";
 
@@ -131,7 +132,7 @@ public class CommandProcessor {
      * Изменяет владельца виртуального файла или каталога.
      */
     private Result handleChown(String[] args) {
-        if (args.length != 2) {
+        if (args.length != CHOWN_ARGUMENT_COUNT) {
             return error("chown требует два аргумента: владелец и путь");
         }
 
